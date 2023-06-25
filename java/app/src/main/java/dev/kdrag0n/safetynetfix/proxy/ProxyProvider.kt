@@ -42,8 +42,8 @@ class ProxyProvider(
             val origFingerprint = Build.FINGERPRINT
             val patchedFingerprint = "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys"
 
-            val origDEVICE_INITIAL_SDK_INT = Build.DEVICE_INITIAL_SDK_INT
-            val patchedDEVICE_INITIAL_SDK_INT = "25"
+            val origDEVICEINITIALSDKINT = Build.DEVICE_INITIAL_SDK_INT
+            val patchedDEVICEINITIALSDKINT = "25"
 
             logDebug("Patch PRODUCT for KeyStore $origProduct -> $patchedProduct")
             Build::class.java.getDeclaredField("PRODUCT").let { field ->
@@ -75,10 +75,10 @@ class ProxyProvider(
                 field.isAccessible = true
                 field.set(null, patchedFingerprint)
             }
-            logDebug("Patch DEVICE_INITIAL_SDK_INT for KeyStore $origDEVICE_INITIAL_SDK_INT -> $patchedDEVICE_INITIAL_SDK_INT")
+            logDebug("Patch DEVICEINITIALSDKINT for KeyStore $origDEVICEINITIALSDKINT -> $patchedDEVICEINITIALSDKINT")
             Build::class.java.getDeclaredField("DEVICE_INITIAL_SDK_INT").let { field ->
                 field.isAccessible = true
-                field.set(null, patchedDEVICE_INITIAL_SDK_INT)
+                field.set(null, patchedDEVICEINITIALSDKINT)
             }
         }
         return super.getService(type, algorithm)
