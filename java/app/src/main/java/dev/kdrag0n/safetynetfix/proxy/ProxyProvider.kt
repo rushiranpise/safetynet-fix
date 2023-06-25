@@ -25,16 +25,25 @@ class ProxyProvider(
         if (type == "KeyStore" && host != "xiaomi.eu") {
 
             val origProduct = Build.PRODUCT
-            val patchedProduct = "marlin"
+            val patchedProduct = "walleye"
 
             val origDevice = Build.DEVICE
-            val patchedDevice = "marlin"
+            val patchedDevice = "walleye"
 
             val origModel = Build.MODEL
-            val patchedModel = "Pixel XL"
+            val patchedModel = "Pixel 2"
+
+            val origBRAND = Build.BRAND
+            val patchedBRAND = "google"
+
+            val origMANUFACTURER = Build.MANUFACTURER
+            val patchedMANUFACTURER = "Google"
 
             val origFingerprint = Build.FINGERPRINT
-            val patchedFingerprint = "google/marlin/marlin:7.1.2/NJH47F/4146041:user/release-keys"
+            val patchedFingerprint = "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys"
+
+            val origDEVICE_INITIAL_SDK_INT = Build.DEVICE_INITIAL_SDK_INT
+            val patchedDEVICE_INITIAL_SDK_INT = "25"
 
             logDebug("Patch PRODUCT for KeyStore $origProduct -> $patchedProduct")
             Build::class.java.getDeclaredField("PRODUCT").let { field ->
@@ -51,10 +60,25 @@ class ProxyProvider(
                 field.isAccessible = true
                 field.set(null, patchedModel)
             }
+            logDebug("Patch BRAND for KeyStore $origBRAND -> $patchedBRAND")
+            Build::class.java.getDeclaredField("BRAND").let { field ->
+                field.isAccessible = true
+                field.set(null, patchedBRAND)
+            }
+            logDebug("Patch MANUFACTURER for KeyStore $origMANUFACTURER -> $patchedMANUFACTURER")
+            Build::class.java.getDeclaredField("MANUFACTURER").let { field ->
+                field.isAccessible = true
+                field.set(null, patchedMANUFACTURER)
+            }
             logDebug("Patch FINGERPRINT for KeyStore $origFingerprint -> $patchedFingerprint")
             Build::class.java.getDeclaredField("FINGERPRINT").let { field ->
                 field.isAccessible = true
                 field.set(null, patchedFingerprint)
+            }
+            logDebug("Patch DEVICE_INITIAL_SDK_INT for KeyStore $origDEVICE_INITIAL_SDK_INT -> $patchedDEVICE_INITIAL_SDK_INT")
+            Build::class.java.getDeclaredField("DEVICE_INITIAL_SDK_INT").let { field ->
+                field.isAccessible = true
+                field.set(null, patchedDEVICE_INITIAL_SDK_INT)
             }
         }
         return super.getService(type, algorithm)
