@@ -1,4 +1,4 @@
-package dev.kdrag0n.safetynetfix.proxy
+package dev.kdrag0n.safetynetfix.proxy;
 /*
  * Copyright (C) 2020 The Pixel Experience Project
  *               2021-2023 crDroid Android Project
