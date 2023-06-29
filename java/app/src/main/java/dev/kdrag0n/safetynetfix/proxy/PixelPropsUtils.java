@@ -16,6 +16,8 @@ package dev.kdrag0n.safetynetfix.proxy
  * limitations under the License.
  */
 
+package com.android.internal.util.crdroid;
+
 import android.app.Application;
 import android.os.Build;
 import android.os.SystemProperties;
@@ -28,9 +30,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProxyProvider {
+public class PixelPropsUtils {
 
-    private static final String TAG = ProxyProvider.class.getSimpleName();
+    private static final String TAG = PixelPropsUtils.class.getSimpleName();
     private static final String DEVICE = "ro.product.device";
     private static final boolean DEBUG = false;
 
