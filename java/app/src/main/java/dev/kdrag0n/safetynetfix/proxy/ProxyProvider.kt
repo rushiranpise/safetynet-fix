@@ -6,255 +6,205 @@ import android.os.SystemProperties
 import android.util.Log
 
 import java.lang.reflect.Field
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.Collections
 import java.util.HashMap
-import java.util.Map
-import kotlin.concurrent.thread
 
+class ProxyProvider {
+    companion object {
+        private const val TAG = "ProxyProvider"
+        private const val DEBUG = true
 
-class ProxyProvider(
-        propsToChangePixel7Pro.put("FINGERPRINT", "google/cheetah/cheetah:13/TQ3A.230605.012/10204971:user/release-keys");
-        propsToChangePixel5 = new HashMap<>();
-        propsToChangePixel5.put("BRAND", "google");
-        propsToChangePixel5.put("MANUFACTURER", "Google");
-        propsToChangePixel5.put("DEVICE", "redfin");
-        propsToChangePixel5.put("PRODUCT", "redfin");
-        propsToChangePixel5.put("MODEL", "Pixel 5");
-        propsToChangePixel5.put("FINGERPRINT", "google/redfin/redfin:13/TQ3A.230605.011/10161073:user/release-keys");
-        propsToChangePixelXL = new HashMap<>();
-        propsToChangePixelXL.put("BRAND", "google");
-        propsToChangePixelXL.put("MANUFACTURER", "Google");
-        propsToChangePixelXL.put("DEVICE", "marlin");
-        propsToChangePixelXL.put("PRODUCT", "marlin");
-        propsToChangePixelXL.put("MODEL", "Pixel XL");
-        propsToChangePixelXL.put("FINGERPRINT", "google/marlin/marlin:10/QP1A.191005.007.A3/5972272:user/release-keys");
-        propsToChangeROG6 = new HashMap<>();
-        propsToChangeROG6.put("BRAND", "asus");
-        propsToChangeROG6.put("MANUFACTURER", "asus");
-        propsToChangeROG6.put("DEVICE", "AI2201");
-        propsToChangeROG6.put("MODEL", "ASUS_AI2201");
-        propsToChangeXP5 = new HashMap<>();
-        propsToChangeXP5.put("MODEL", "SO-52A");
-        propsToChangeXP5.put("MANUFACTURER", "Sony");
-        propsToChangeOP8P = new HashMap<>();
-        propsToChangeOP8P.put("MODEL", "IN2020");
-        propsToChangeOP8P.put("MANUFACTURER", "OnePlus");
-        propsToChangeOP9P = new HashMap<>();
-        propsToChangeOP9P.put("MODEL", "LE2123");
-        propsToChangeOP9P.put("MANUFACTURER", "OnePlus");
-        propsToChangeMI11T = new HashMap<>();
-        propsToChangeMI11T.put("MODEL", "21081111RG");
-        propsToChangeMI11T.put("MANUFACTURER", "Xiaomi");
-        propsToChangeMI13P = new HashMap<>();
-        propsToChangeMI13P.put("BRAND", "Xiaomi");
-        propsToChangeMI13P.put("MANUFACTURER", "Xiaomi");
-        propsToChangeMI13P.put("MODEL", "2210132C");
-        propsToChangeF5 = new HashMap<>();
-        propsToChangeF5.put("MODEL", "23049PCD8G");
-        propsToChangeF5.put("MANUFACTURER", "Xiaomi");
-        propsToChangeK30U = new HashMap<>();
-        propsToChangeK30U.put("MODEL", "M2006J10C");
-        propsToChangeK30U.put("MANUFACTURER", "Xiaomi");
-    }
+        private val propsToChangePixel7Pro = mutableMapOf(
+            "FINGERPRINT" to "google/cheetah/cheetah:13/TQ3A.230605.012/10204971:user/release-keys"
+        )
+        private val propsToChangePixel5 = mutableMapOf(
+            "BRAND" to "google",
+            "MANUFACTURER" to "Google",
+            "DEVICE" to "redfin",
+            "PRODUCT" to "redfin",
+            "MODEL" to "Pixel 5",
+            "FINGERPRINT" to "google/redfin/redfin:13/TQ3A.230605.011/10161073:user/release-keys"
+        )
+        private val propsToChangePixelXL = mutableMapOf(
+            "BRAND" to "google",
+            "MANUFACTURER" to "Google",
+            "DEVICE" to "marlin",
+            "PRODUCT" to "marlin",
+            "MODEL" to "Pixel XL",
+            "FINGERPRINT" to "google/marlin/marlin:10/QP1A.191005.007.A3/5972272:user/release-keys"
+        )
+        private val propsToChangeROG6 = mutableMapOf(
+            "BRAND" to "asus",
+            "MANUFACTURER" to "asus",
+            "DEVICE" to "AI2201",
+            "MODEL" to "ASUS_AI2201"
+        )
+        private val propsToChangeXP5 = mutableMapOf(
+            "MODEL" to "SO-52A",
+            "MANUFACTURER" to "Sony"
+        )
+        private val propsToChangeOP8P = mutableMapOf(
+            "MODEL" to "IN2020",
+            "MANUFACTURER" to "OnePlus"
+        )
+        private val propsToChangeOP9P = mutableMapOf(
+            "MODEL" to "LE2123",
+            "MANUFACTURER" to "OnePlus"
+        )
+        private val propsToChangeMI11T = mutableMapOf(
+            "MODEL" to "21081111RG",
+            "MANUFACTURER" to "Xiaomi"
+        )
+        private val propsToChangeMI13P = mutableMapOf(
+            "BRAND" to "Xiaomi",
+            "MANUFACTURER" to "Xiaomi",
+            "MODEL" to "2210132C"
+        )
+        private val propsToChangeF5 = mutableMapOf(
+            "MODEL" to "23049PCD8G",
+            "MANUFACTURER" to "Xiaomi"
+        )
+        private val propsToChangeK30U = mutableMapOf(
+            "MODEL" to "M2006J10C",
+            "MANUFACTURER" to "Xiaomi"
+        )
 
-    public static void setProps(String packageName) {
-        propsToChangeGeneric.forEach((k, v) -> setPropValue(k, v));
+        private val packagesToKeep = arrayOf(
+            // Add package names to keep here
+        )
 
-        if (packageName == null || packageName.isEmpty()) {
-            return;
+        private val pixelCodenames = arrayOf(
+            // Add pixel codenames here
+        )
+
+        private val extraPackagesToChange = arrayOf(
+            // Add extra packages to change here
+        )
+
+        private val packagesToChangePixel7Pro = arrayOf(
+            // Add package names to change for Pixel 7 Pro here
+        )
+
+        private val packagesToChangePixel5 = arrayOf(
+            // Add package names to change for Pixel 5 here
+        )
+
+        private val packagesToChangePixelXL = arrayOf(
+            // Add package names to change for Pixel XL here
+        )
+
+        private val packagesToChangeROG6 = arrayOf(
+            // Add package names to change for ROG 6 here
+        )
+
+        private val packagesToChangeXP5 = arrayOf(
+            // Add package names to change for Xperia 5 here
+        )
+
+        private val packagesToChangeOP8P = arrayOf(
+            // Add package names to change for OnePlus 8 Pro here
+        )
+
+        private val packagesToChangeOP9P = arrayOf(
+            // Add package names to change for OnePlus 9 Pro here
+        )
+
+        private val packagesToChangeMI11T = arrayOf(
+            // Add package names to change for Mi 11T here
+        )
+
+        private val packagesToChangeMI13P = arrayOf(
+            // Add package names to change for Mi 13 Pro here
+        )
+
+        private val packagesToChangeF5 = arrayOf(
+            // Add package names to change for F5 here
+        )
+
+        private val packagesToChangeK30U = arrayOf(
+            // Add package names to change for K30 Ultra here
+        )
+
+        private val propMap = HashMap<String, MutableMap<String, String>>()
+
+        init {
+            propMap["pixel7pro"] = propsToChangePixel7Pro
+            propMap["pixel5"] = propsToChangePixel5
+            propMap["pixelxl"] = propsToChangePixelXL
+            propMap["rog6"] = propsToChangeROG6
+            propMap["xperia5"] = propsToChangeXP5
+            propMap["op8pro"] = propsToChangeOP8P
+            propMap["op9pro"] = propsToChangeOP9P
+            propMap["mi11t"] = propsToChangeMI11T
+            propMap["mi13pro"] = propsToChangeMI13P
+            propMap["f5"] = propsToChangeF5
+            propMap["k30u"] = propsToChangeK30U
         }
-        if (packageName.startsWith("com.google.")
-                || Arrays.asList(extraPackagesToChange).contains(packageName)) {
 
-            if (Arrays.asList(packagesToKeep).contains(packageName) ||
-                    packageName.startsWith("com.google.android.GoogleCamera")) {
-                return;
-            }
+        fun fixProxyProperties(app: Application) {
+            val deviceProp = getDeviceProp(app)
+            if (deviceProp != null) {
+                if (DEBUG) {
+                    Log.d(TAG, "Device: ${deviceProp.deviceName}")
+                    Log.d(TAG, "Codename: ${deviceProp.codename}")
+                }
 
-            Map<String, Object> propsToChange = new HashMap<>();
-            boolean isPixelDevice = Arrays.asList(pixelCodenames).contains(SystemProperties.get(DEVICE));
-
-            if (packageName.equals("com.google.android.apps.photos")) {
-                if (SystemProperties.getBoolean("persist.sys.pixelprops.gphotos", true)) {
-                    propsToChange.putAll(propsToChangePixelXL);
-                } else {
-                    if (isPixelDevice) return;
-                    propsToChange.putAll(propsToChangePixel5);
-                }
-            } else if (packageName.equals("com.netflix.mediaclient") && 
-                        !SystemProperties.getBoolean("persist.sys.pixelprops.netflix", false)) {
-                    if (DEBUG) Log.d(TAG, "Netflix spoofing disabled by system prop");
-                    return;
-            } else if (isPixelDevice) {
-                return;
-            } else if (packageName.equals("com.android.vending")) {
-                sIsFinsky = true;
-                return;
-            } else {
-                if (Arrays.asList(packagesToChangePixel7Pro).contains(packageName)) {
-                    propsToChange.putAll(propsToChangePixel7Pro);
-                } else if (Arrays.asList(packagesToChangePixelXL).contains(packageName)) {
-                    propsToChange.putAll(propsToChangePixelXL);
-                } else {
-                    propsToChange.putAll(propsToChangePixel5);
-                }
-            }
-
-            if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
-            for (Map.Entry<String, Object> prop : propsToChange.entrySet()) {
-                String key = prop.getKey();
-                Object value = prop.getValue();
-                if (propsToKeep.containsKey(packageName) && propsToKeep.get(packageName).contains(key)) {
-                    if (DEBUG) Log.d(TAG, "Not defining " + key + " prop for: " + packageName);
-                    continue;
-                }
-                if (DEBUG) Log.d(TAG, "Defining " + key + " prop for: " + packageName);
-                setPropValue(key, value);
-            }
-            if (packageName.equals("com.google.android.gms")) {
-                final String processName = Application.getProcessName();
-                if (processName.toLowerCase().contains("unstable")
-                    || processName.toLowerCase().contains("pixelmigrate")
-                    || processName.toLowerCase().contains("instrumentation")) {
-                    sIsGms = true;
-                    spoofBuildGms();
-                }
-                return;
-            }
-            // Set proper indexing fingerprint
-            if (packageName.equals("com.google.android.settings.intelligence")) {
-                setPropValue("FINGERPRINT", Build.VERSION.INCREMENTAL);
-            }
-        } else {
-
-            if (!SystemProperties.getBoolean("persist.sys.pixelprops.games", false))
-                return;
-
-            if (Arrays.asList(packagesToChangeROG6).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
-                for (Map.Entry<String, Object> prop : propsToChangeROG6.entrySet()) {
-                    String key = prop.getKey();
-                    Object value = prop.getValue();
-                    setPropValue(key, value);
-                }
-            } else if (Arrays.asList(packagesToChangeXP5).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
-                for (Map.Entry<String, Object> prop : propsToChangeXP5.entrySet()) {
-                    String key = prop.getKey();
-                    Object value = prop.getValue();
-                    setPropValue(key, value);
-                }
-            } else if (Arrays.asList(packagesToChangeOP8P).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
-                for (Map.Entry<String, Object> prop : propsToChangeOP8P.entrySet()) {
-                    String key = prop.getKey();
-                    Object value = prop.getValue();
-                    setPropValue(key, value);
-                }
-            } else if (Arrays.asList(packagesToChangeOP9P).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
-                for (Map.Entry<String, Object> prop : propsToChangeOP9P.entrySet()) {
-                    String key = prop.getKey();
-                    Object value = prop.getValue();
-                    setPropValue(key, value);
-                }
-            } else if (Arrays.asList(packagesToChangeMI11T).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
-                for (Map.Entry<String, Object> prop : propsToChangeMI11T.entrySet()) {
-                    String key = prop.getKey();
-                    Object value = prop.getValue();
-                    setPropValue(key, value);
-                }
-            } else if (Arrays.asList(packagesToChangeMI13P).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
-                for (Map.Entry<String, Object> prop : propsToChangeMI13P.entrySet()) {
-                    String key = prop.getKey();
-                    Object value = prop.getValue();
-                    setPropValue(key, value);
-                }
-            } else if (Arrays.asList(packagesToChangeF5).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
-                for (Map.Entry<String, Object> prop : propsToChangeF5.entrySet()) {
-                    String key = prop.getKey();
-                    Object value = prop.getValue();
-                    setPropValue(key, value);
-                }
-            } else if (Arrays.asList(packagesToChangeK30U).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
-                for (Map.Entry<String, Object> prop : propsToChangeK30U.entrySet()) {
-                    String key = prop.getKey();
-                    Object value = prop.getValue();
-                    setPropValue(key, value);
+                if (shouldChangeDeviceProps(deviceProp.codename)) {
+                    changeSystemProperties(deviceProp.codename)
                 }
             }
         }
-    }
 
-    private static void setPropValue(String key, Object value) {
-        try {
-            if (DEBUG) Log.d(TAG, "Defining prop " + key + " to " + value.toString());
-            Field field = Build.class.getDeclaredField(key);
-            field.setAccessible(true);
-            field.set(null, value);
-            field.setAccessible(false);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            Log.e(TAG, "Failed to set prop " + key, e);
+        private fun getDeviceProp(app: Application): DeviceProperties? {
+            val model = Build.MODEL ?: return null
+            val manufacturer = Build.MANUFACTURER ?: return null
+            val deviceName = "$manufacturer $model"
+            val codename = SystemProperties.get("ro.product.device")
+
+            if (DEBUG) {
+                Log.d(TAG, "getDeviceProp: $deviceName ($codename)")
+            }
+
+            return DeviceProperties(deviceName, codename)
+        }
+
+        private fun shouldChangeDeviceProps(codename: String?): Boolean {
+            return codename != null && pixelCodenames.contains(codename)
+        }
+
+        private fun changeSystemProperties(codename: String) {
+            val propsToChange = propMap[codename]
+            if (propsToChange == null) {
+                if (DEBUG) {
+                    Log.d(TAG, "No properties to change for codename: $codename")
+                }
+                return
+            }
+
+            val sysPropsClass = SystemProperties::class.java
+            val systemPropsField: Field
+            try {
+                systemPropsField = sysPropsClass.getDeclaredField("sSystemProperties")
+                systemPropsField.isAccessible = true
+                val systemProps = systemPropsField.get(null) as HashMap<*, *>
+
+                for ((key, value) in propsToChange) {
+                    if (value.isEmpty()) {
+                        if (DEBUG) {
+                            Log.d(TAG, "Clearing property: $key")
+                        }
+                        systemProps.remove(key)
+                    } else {
+                        if (DEBUG) {
+                            Log.d(TAG, "Setting property: $key=$value")
+                        }
+                        systemProps[key] = value
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to change system properties", e)
+            }
         }
     }
 
-    private static void setBuildField(String key, String value) {
-        try {
-            // Unlock
-            Field field = Build.class.getDeclaredField(key);
-            field.setAccessible(true);
-
-            // Edit
-            field.set(null, value);
-
-            // Lock
-            field.setAccessible(false);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            Log.e(TAG, "Failed to spoof Build." + key, e);
-        }
-    }
-
-    private static void setVersionField(String key, Integer value) {
-        try {
-            // Unlock
-            Field field = Build.VERSION.class.getDeclaredField(key);
-            field.setAccessible(true);
-
-            // Edit
-            field.set(null, value);
-
-            // Lock
-            field.setAccessible(false);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            Log.e(TAG, "Failed to spoof Build." + key, e);
-        }
-    }
-
-    private static void spoofBuildGms() {
-        // Alter model name and fingerprint to Pixel 2 to avoid hardware attestation enforcement
-        setPropValue("DEVICE", "walleye");
-        setPropValue("FINGERPRINT", "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys");
-        setPropValue("MODEL", "Pixel 2");
-        setPropValue("PRODUCT", "walleye");
-        setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.O);
-    }
-
-    private static boolean isCallerSafetyNet() {
-        return sIsGms && Arrays.stream(Thread.currentThread().getStackTrace())
-                .anyMatch(elem -> elem.getClassName().contains("DroidGuard"));
-    }
-
-    public static void onEngineGetCertificateChain() {
-        // Check stack for SafetyNet or Play Integrity
-        if (isCallerSafetyNet() || sIsFinsky) {
-            Log.i(TAG, "Blocked key attestation sIsGms=" + sIsGms + " sIsFinsky=" + sIsFinsky);
-            throw new UnsupportedOperationException();
-        }
-    }
+    private data class DeviceProperties(val deviceName: String, val codename: String?)
 }
