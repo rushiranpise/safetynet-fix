@@ -46,6 +46,6 @@ fi
 
     # Avoid breaking encryption, set shipping level to 32 for devices >=33 to allow for software attestation
     if [[ "$(getprop ro.product.first_api_level)" -ge 33 ]]; then
-        resetprop ro.product.first_api_level 32
+        resetprop ro.product.first_api_level 26
     fi
 }&
