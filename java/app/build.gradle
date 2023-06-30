@@ -6,7 +6,7 @@ plugins {
 android {
     namespace 'dev.kdrag0n.safetynetfix'
 
-    compileSdk 33
+    compileSdk 26
 
     defaultConfig {
         applicationId "dev.kdrag0n.safetynetfix"
