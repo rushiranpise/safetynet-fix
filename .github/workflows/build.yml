@@ -1,0 +1,40 @@
+name: Make Module
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  make_module:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 17
+    - uses: nttld/setup-ndk@v1.2.0
+      with:
+        ndk-version: r25b
+    - uses: gradle/gradle-build-action@v2
+    - name: Make NDK
+      run: ndk-build NDK_DEBUG=0
+      working-directory: ./zygisk/module
+    - name: Make Java
+      run: bash gradlew assembleRelease
+      working-directory: ./java
+    - name: Make zip Module
+      run: |
+        echo "VERSION=$(grep '^version=' module.prop  | cut -d= -f2)" >> "$GITHUB_ENV"
+        mkdir -p zygisk
+        cp "../zygisk/module/libs/arm64-v8a/libsafetynetfix.so" "zygisk/arm64-v8a.so"
+        cp "../zygisk/module/libs/armeabi-v7a/libsafetynetfix.so" "zygisk/armeabi-v7a.so"
+        cp "../zygisk/module/libs/x86/libsafetynetfix.so" "zygisk/x86.so"
+        cp "../zygisk/module/libs/x86_64/libsafetynetfix.so" "zygisk/x86_64.so"
+        unzip "../java/app/build/outputs/apk/release/app-release.apk" "classes.dex"
+      working-directory: ./magisk
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: safetynet-fix-${{ env.VERSION }}
+        path: ./magisk/*
