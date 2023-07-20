@@ -1,6 +1,6 @@
 name: Make Module
 on: 
-  workflow_dispatch:
+  push:
 jobs:
   make_module:
     runs-on: ubuntu-latest
